@@ -4,7 +4,7 @@ import { GlobalState } from "../../../GlobalState"
 import ProductItem from "../utils/productItem/ProductItem"
 
 function DetailProduct() {
-  const params = useParams()
+  const param = useParams()
   const state = useContext(GlobalState)
   const [products] = state.productsAPI.products
   const addCart = state.userAPI.addCart
@@ -12,12 +12,12 @@ function DetailProduct() {
 
   // duyet products trung id thi tha ve product do
   useEffect(() => {
-    if (params.id) {
+    if (param.id) {
       products.forEach((product) => {
-        if (product._id === params.id) setDetailProduct(product)
+        if (product._id === param.id) setDetailProduct(product)
       })
     }
-  }, [params.id, products])
+  }, [param.id, products])
 
   if (detailProduct.length === 0) return null
   return (

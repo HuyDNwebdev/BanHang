@@ -1,17 +1,15 @@
 import React, { useState, useContext, useEffect } from "react"
-import { GlobalState } from "../../../GlobalState"
 import axios from "axios"
+import { GlobalState } from "../../../GlobalState"
 import Loading from "../utils/loading/Loading"
 import { useHistory, useParams } from "react-router-dom"
-import { set } from "mongoose"
 
 const initialState = {
   product_id: "",
   title: "",
   price: 0,
-  description:
-    "This awesome website consists of more than 100 different CSS effects like 2D transitions, background transitions, icon CSS effects, border transitions, shadow and glow transitions, speech bubble CSS effects, and cool CSS curl effects. Check it out!",
-  content: "Welcome to our UIT shop",
+  description: "How to Web Design ideas,JavaScript libraries, Node.",
+  content: "Welcome to UIT Shop",
   category: "",
   _id: "",
 }
@@ -19,17 +17,17 @@ const initialState = {
 function CreateProduct() {
   const state = useContext(GlobalState)
   const [product, setProduct] = useState(initialState)
+  const [categories] = state.categoriesAPI.categories
   const [images, setImages] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const [isAdmin] = state.userAPI.isAdmin
-  const token = state.token
-  const [categories] = state.categoriesAPI.categories
+  const [token] = state.token
 
   const history = useHistory()
   const param = useParams()
 
-  const [products, setProducts] = state.productsAPI.products
+  const [products] = state.productsAPI.products
   const [onEdit, setOnEdit] = useState(false)
   const [callback, setCallback] = state.productsAPI.callback
 
@@ -62,6 +60,7 @@ function CreateProduct() {
         return alert("Size too large!")
 
       if (file.type !== "image/jpeg" && file.type !== "image/png")
+        // 1mb
         return alert("File format is incorrect.")
 
       let formData = new FormData()
@@ -81,10 +80,9 @@ function CreateProduct() {
     }
   }
 
-  const handleDestroy = async (e) => {
+  const handleDestroy = async () => {
     try {
-      if (!isAdmin) return alert("You're not the admin")
-
+      if (!isAdmin) return alert("You're not an admin")
       setLoading(true)
       await axios.post(
         "/api/destroy",
@@ -100,7 +98,7 @@ function CreateProduct() {
     }
   }
 
-  const handleChangeInput = async (e) => {
+  const handleChangeInput = (e) => {
     const { name, value } = e.target
     setProduct({ ...product, [name]: value })
   }
@@ -129,8 +127,6 @@ function CreateProduct() {
         )
       }
       setCallback(!callback)
-      setImages(false)
-      setProducts(initialState)
       history.push("/")
     } catch (err) {
       alert(err.response.data.msg)
