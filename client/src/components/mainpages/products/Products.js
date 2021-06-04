@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useState } from "react"
 import { GlobalState } from "../../../GlobalState"
 import ProductItem from "../utils/productItem/ProductItem"
 import Loading from "../utils/loading/Loading"
 import axios from "axios"
-import { set } from "mongoose"
+import Filter from "./Filter"
+import LoadMore from "./LoadMore"
 
 export default function Products() {
   const state = useContext(GlobalState)
@@ -51,11 +52,14 @@ export default function Products() {
     setIsCheck(!isCheck)
   }
 
+  //xoa all san pham da check
   const deleteAll = () => {
     products.forEach((product) => {
       if (product.checked) deleteProduct(product._id, product.images.public_id)
     })
   }
+
+  // xoay xoay cho mau me
   if (loading)
     return (
       <div className="products">
@@ -65,6 +69,7 @@ export default function Products() {
 
   return (
     <>
+      <Filter />
       {isAdmin && (
         <div className="delete-all">
           <span>Select all</span>
@@ -85,6 +90,7 @@ export default function Products() {
           )
         })}
       </div>
+      <LoadMore />
       {products.length === 0 && <Loading />}
     </>
   )
